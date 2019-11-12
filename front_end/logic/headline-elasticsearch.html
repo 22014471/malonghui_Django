@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+ <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <link rel="icon" href="./img/asset-favicon.ico" />
+  <title>社交-头条</title>
+  <!-- 页面 css js -->
+  <!-- <script type="text/javascript" src="../../plugins/sui/sui.min.js"></script> -->
+  <link rel="stylesheet" type="text/css" href="./plugins/normalize-css/normalize.css" />
+  <link rel="stylesheet" type="text/css" href="./plugins/yui/cssgrids-min.css" />
+  <link rel="stylesheet" type="text/css" href="./plugins/sui/sui.min.css" />
+  <link rel="stylesheet" type="text/css" href="./plugins/sui/sui-append.min.css" />
+  <link rel="stylesheet" type="text/css" href="./plugins/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" type="text/css" href="./css/widget-base.css" />
+  <link rel="stylesheet" type="text/css" href="./css/widget-head-foot.css" />
+  <link rel="stylesheet" type="text/css" href="./css/page-sj-headline-login.css" />
+     <script type="text/javascript" src="js/host.js"></script>
+     <script type="text/javascript" src="js/vue.min.js"></script>
+     <script type="text/javascript" src="js/axios-0.18.0.min.js"></script>
+ </head>
+ <body>
+
+  <div class="sui-container wrapper" id="wozhende">
+      <div id="app">
+   <!--引用组件-->
+   <!--头部导航-->
+   <header>
+
+    <div class="sui-navbar">
+     <div class="navbar-inner">
+      <a href="./headline-login.html" class="sui-brand"><img src="./img/asset-logo-black.png" alt="社交" /></a>
+      <ul class="sui-nav">
+       <li class="active"><a href="./headline-logined.html">头条</a></li>
+       <li><a href="./qa-login.html">问答</a></li>
+       <li><a href="./activity-index.html">活动</a></li>
+       <li><a href="./makeFriends-index.html">交友</a></li>
+       <li><a href="./spit-index.html">吐槽</a></li>
+       <li><a href="./recruit-index.html">招聘</a></li>
+      </ul>
+      <form class="sui-form sui-form pull-left">
+       <input type="text" placeholder="输入关键词..." />
+       <span class="btn-search fa fa-search"></span>
+      </form>
+         <div class="sui-nav pull-right info" v-if="user_id==0">
+             <li><a href="./person-loginsign.html" target="_blank">注册</a></li>
+             <li><a href="./person-loginsign.html" target="_blank" class="sui-btn btn-login">登录</a></li>
+         </div>
+         <div class="sui-nav pull-right info" v-if="user_id">
+             <li><a href="./other-notice.html" target="_blank" class="notice">通知</a></li>
+             <li class="hover"><span class="fa fa-plus "></span>
+                 <ul class="hoverinfo">
+                     <li><i class="fa fa-share-alt" aria-hidden="true"></i> <a href="./headline-submit.html">去分享</a>
+                     </li>
+                     <li><i class="fa fa-question-circle" aria-hidden="true"></i> <a href="./qa-submit.html"
+                                                                                     target="_blank">提问题</a></li>
+                     <li><i class="fa fa-comments" aria-hidden="true"></i><a href="./spit-submit.html" target="_blank">去吐槽</a>
+                     </li>
+                     <li><i class="fa fa-heartbeat" aria-hidden="true"></i> <a href="./makeFriends-submit.html"
+                                                                               target="_blank">发约会</a></li>
+                 </ul>
+             </li>
+             <li><a href="./person-homepage.html" target="_blank" class="homego"><img src="./img/widget-photo.png"
+                                                                                      alt="用户头像"/></a></li>
+         </div>
+     </div>
+    </div>
+   </header>
+   <!--三列布局-->
+    <div class="right-content">
+     <div class="fl middle">
+      <div class="data-list">
+          <ul class="headline fixed" id="headline">
+              <li v-for="i in news_list" class="headline-item">
+
+                  <div class="fl indexImg">
+                      <img src=""/>
+                  </div>
+                  <div class="words">
+                      <a :href="'./headline-detail.html?news_id=' + i.id" style="text-decoration:none;color:#000000;">
+                      <h3>{{ i.title }} <span><img src="" class="vip"/></span></h3>
+                      </a>
+                      <h5 class="author">
+                          <div class="fl">
+                              <span class="authorName"> <img src="./img/widget-photo.png" alt=""/> {{ i.author.username }} </span>
+                              <span>{{ i.create_time | filterA }}</span>
+                          </div>
+                          <div class="fr attention">
+                              <span class="attentionText" @click="attention_add(i.author.id)"  v-if="i.att!=true">关注</span>
+                              <span class="attentionText" @click="attention_delete(i.author.id)" v-if="i.att">已关注</span>
+                              <span class="beforeclose" @click="unlike(i.id)">
+                                  <i class="fa fa-times delete" aria-hidden="true"></i>
+                                  <i class="nolike">不感兴趣</i>
+                              </span>
+                          </div>
+                          <div class="clearfix"></div>
+                      </h5>
+                  </div>
+                  <p  class="text ell-2" v-html="i.content"></p>
+
+              </li>
+          <div class="pagenation">
+             <a v-show="previous" @click="on_page(previous)">上一页</a>
+             <a v-for="num in page_nums" @click="on_page(num)"
+                :class="num==page?'active':''">{{ num }}</a>
+             <a v-show="next" @click="on_page(next)">下一页></a>
+         </div>
+
+       </ul>
+
+      </div>
+     </div>
+    </div>
+   </div>
+          </div>
+  </div>
+
+  <div class="footer">
+   <div class="wrapper">
+    <div class="footer-bottom">
+
+     <div class="link">
+      <dl>
+       <dt>
+        网站相关
+       </dt>
+       <dd>
+        关于我们
+       </dd>
+       <dd>
+        服务条款
+       </dd>
+       <dd>
+        帮助中心
+       </dd>
+       <dd>
+        编辑器语法
+       </dd>
+      </dl>
+      <dl>
+       <dt>
+        常用链接
+       </dt>
+       <dd>
+        传智播客
+       </dd>
+       <dd>
+        传智论坛
+       </dd>
+      </dl>
+      <dl>
+       <dt>
+        联系我们
+       </dt>
+       <dd>
+        联系我们
+       </dd>
+       <dd>
+        加入我们
+       </dd>
+       <dd>
+        建议反馈
+       </dd>
+      </dl>
+      <dl>
+       <dt>
+        关注我们
+       </dt>
+       <dd>
+        微博
+       </dd>
+       <dd>
+        twitter
+       </dd>
+      </dl>
+      <div class="xuke">
+       <h3>内容许可</h3>
+       <p>除特别说明外，用户内容均采用知识共享署名-非商业性使用-禁止演绎4.0 国际许可协议 (CC BY-NC-ND 4.0) 进行许可</p>
+       <p>本站由 传智研究院 提供更新服务</p>
+      </div>
+     </div>
+     <p class="Copyright">Copyright &copy; 2017 传智问答社区 当前版本 0.0.1</p>
+    </div>
+   </div>
+  </div>
+ </body>
+  <script type="text/javascript" src="js/headline-elasticsearch.js"></script>
+</html>
